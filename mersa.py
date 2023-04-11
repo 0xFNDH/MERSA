@@ -80,11 +80,13 @@ def laplace(demon, parm=None, wait=False, prefix="Ld_"):
   else:
     print(f"[Laplace] {demon} is not callable. Consult your python spellbook.")
 
-def multicast_socket(port=None, ttl=None):
+def multicast_socket(port=None, ttl=5, hops=255):
   """Returns multicast socket and binds the socket if the port is given.
   """
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
   sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+  sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
   if port != None:
     sock.bind(("0.0.0.0", port))
   mreq = struct.pack("4sl", socket.inet_aton("224.0.0.251"), socket.INADDR_ANY)
@@ -119,6 +121,7 @@ def c2_mersa(multicast_group="224.0.0.251", multicast_port=514):
         else:
           display_hosts()
       except KeyboardInterrupt:
+        soc.close()
         KeyboardInterrupt()
         sys.exit()
       except Exception as e:
@@ -133,7 +136,7 @@ def c2_mersa(multicast_group="224.0.0.251", multicast_port=514):
 def listen_mersa(multicast_port=514):
   """Automatically attempts to unencrypt messages using the private key.
   """
-  soc = multicast_socket(multicast_port, ttl=5)
+  soc = multicast_socket(multicast_port)
   while True:
     try:
       data, addr = soc.recvfrom(2048)
@@ -142,10 +145,12 @@ def listen_mersa(multicast_port=514):
           plaintext = decrypt(data, private_key)
           print(f"\n\n[MSG-RECV][{addr[0]}] {plaintext}")
         except KeyboardInterrupt:
+          soc.close()
           break
         except:
           pass
     except KeyboardInterrupt:
+      soc.close()
       break
     except:
       pass
@@ -153,7 +158,7 @@ def listen_mersa(multicast_port=514):
 def listen_key(multicast_group="224.0.0.251", multicast_port=667):
   """Waits for host to send public key and will automatically respond with its own.
   """
-  soc = multicast_socket(multicast_port, ttl=5)
+  soc = multicast_socket(multicast_port)
   while True:
     try:
       data, addr = soc.recvfrom(2048)
@@ -165,6 +170,7 @@ def listen_key(multicast_group="224.0.0.251", multicast_port=667):
         print(f"\n\n[JOIN] {addr[0]} has joined.")
       time.sleep(5)
     except KeyboardInterrupt:
+      soc.close()
       break
     except Exception as e:
       pass
