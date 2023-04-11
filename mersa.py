@@ -51,47 +51,27 @@ def IPv4LAN():
     s.close()
   return IP
 
-def laplace(demon, parm=None, wait=False, prefix="Ld_"):
-  """The Daemon Handler that knows where all the demons are and therefore where they will be.
-  """
-  while threading.active_count() > 150:
-    time.sleep(0.25)
-  if callable(demon):
-    if wait != True:
-      if type(parm) in [type([]), type(())]:
-        d = threading.Thread(target=demon, args=parm)
-      elif type(parm) in (type(1), type(""), type(1.0), type(True)):
-        d = threading.Thread(target=demon, args=(parm,))
-      else:
-        d = threading.Thread(target=demon)
-      d.daemon = True
-      dname = f"{prefix}{demon.__name__}"
-      if dname in str(threading._active):
-        if "y" in input(f"[Laplace] {dname} is already running, are you sure you would like to continue? [y/n] ").lower():
-          d.setName(dname)
-          d.start()
-      else:
-        d.start()
-    else:
-      if parm != None:
-        demon(parm)
-      else:
-        demon()
-  else:
-    print(f"[Laplace] {demon} is not callable. Consult your python spellbook.")
-
-def multicast_socket(port=None, ttl=5, hops=255):
-  """Returns multicast socket and binds the socket if the port is given.
+def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
+  """Returns multicast reciever socket
   """
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-  sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-  sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
-  if port != None:
-    sock.bind(("0.0.0.0", port))
-  mreq = struct.pack("4sl", socket.inet_aton("224.0.0.251"), socket.INADDR_ANY)
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+  try:
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+  except AttributeError:
+    pass
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+  sock.bind((address, port))
+  host = IPv4LAN()
+  sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+  sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, 
+  socket.inet_aton(address) + socket.inet_aton(host))
   sock.settimeout(ttl)
+  return sock
+
+def multicast_send(hops=255):
+  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
   return sock
 
 def display_hosts():
@@ -100,11 +80,11 @@ def display_hosts():
     print(f"+ -- =[ OPTION: {servers.index(serv)}{' '*(23-len(serv))}{serv} ]")
   print()
 
-def c2_mersa(multicast_group="224.0.0.251", multicast_port=514):
+def c2_mersa(multicast_group="224.0.0.251", multicast_port=1514, keyport=1667):
   """This prompts for and sends encrypted messages to hosts.
   """
   print("     =[ Type 'discover' to find hosts.   ]")
-  soc = multicast_socket()
+  soc = multicast_send()
   while True:
     display_hosts()
     while True:
@@ -112,7 +92,7 @@ def c2_mersa(multicast_group="224.0.0.251", multicast_port=514):
       try:
         opt = input("MERSA(host-id) % ").strip()
         if opt.lower() == "discover":
-          soc.sendto(public_key, (multicast_group, 667))
+          soc.sendto(public_key, (multicast_group, keyport))
         elif opt in servers:
           break
         elif opt.isdigit():
@@ -133,47 +113,73 @@ def c2_mersa(multicast_group="224.0.0.251", multicast_port=514):
     
   soc.close()
 
-def listen_mersa(multicast_port=514):
+def listen_mersa(multicast_port=1514):
   """Automatically attempts to unencrypt messages using the private key.
   """
-  soc = multicast_socket(multicast_port)
+  soc = multicast_recv(multicast_port)
   while True:
     try:
       data, addr = soc.recvfrom(2048)
-      if addr[0] in c2_servers.keys():
-        try:
-          plaintext = decrypt(data, private_key)
-          print(f"\n\n[MSG-RECV][{addr[0]}] {plaintext}")
-        except KeyboardInterrupt:
-          soc.close()
-          break
-        except:
-          pass
+      if addr[0] != IPv4LAN():
+        plaintext = decrypt(data, private_key)
+        print(f"\n\n[MSG-RECV][{addr[0]}] {plaintext}")
     except KeyboardInterrupt:
       soc.close()
       break
     except:
       pass
 
-def listen_key(multicast_group="224.0.0.251", multicast_port=667):
+def listen_key(multicast_group="224.0.0.251", keyport=1667):
   """Waits for host to send public key and will automatically respond with its own.
   """
-  soc = multicast_socket(multicast_port)
+  soc = multicast_recv(keyport)
+  sock = multicast_send()
   while True:
     try:
       data, addr = soc.recvfrom(2048)
-      if addr[0] != IPv4LAN():
-        soc.sendto(public_key, (multicast_group, multicast_port))
-      pub = RSA.importKey(data)
-      if addr[0] not in c2_servers.keys() and addr[0] != IPv4LAN():
-        c2_servers.update({addr[0]:pub})
-        print(f"\n\n[JOIN] {addr[0]} has joined.")
-      time.sleep(5)
+      if addr[0] == IPv4LAN():
+        data, addr = soc.recvfrom(2048)
+      if b"---END PUBLIC KEY---" in data and addr[0] != IPv4LAN():
+        pub = RSA.importKey(data)
+        if addr[0] not in c2_servers.keys():
+          sock.sendto(public_key, (multicast_group, keyport))
+          c2_servers.update({addr[0]:pub})
+          print(f"\n\n[JOIN] {addr[0]} has joined.")
+        time.sleep(5)
     except KeyboardInterrupt:
       soc.close()
       break
     except Exception as e:
       pass
+
+def laplace(demon, parm=None, wait=False, prefix="Ld_"):
+  """The Daemon Handler that knows where all the demons are and therefore where they will be.
+  """
+  while threading.active_count() > 150:
+    time.sleep(0.25)
+  if callable(demon):
+    if wait != True:
+      if type(parm) in [type([]), type(())]:
+        d = threading.Thread(target=demon, args=parm)
+      elif type(parm) in [type(1), type(""), type(1.0), type(True)]:
+        d = threading.Thread(target=demon, args=(parm,))
+      else:
+        d = threading.Thread(target=demon)
+      d.daemon = True
+      dname = f"{prefix}{demon.__name__}"
+      if dname in str(threading._active):
+        if "y" in input(f"[Laplace] {dname} is already running, are you sure you would like to continue? [y/n] ").lower():
+          d.setName(dname)
+          d.start()
+      else:
+        d.start()
+    else:
+      if parm != None:
+        demon(parm)
+      else:
+        demon()
+  else:
+    print(f"[Laplace] {demon} is not callable. Consult your python spellbook.")
 
 if __name__ == "__main__":
   
