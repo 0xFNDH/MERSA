@@ -60,7 +60,7 @@ def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
   except AttributeError:
     pass
   sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
   sock.bind((address, port))
   host = IPv4LAN()
   sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
@@ -72,6 +72,10 @@ def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
 def multicast_send(hops=255):
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
   sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
+  
+  #sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(IPv4LAN()))
+  #sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton("224.0.0.251") + socket.inet_aton(IPv4LAN()))
+  
   return sock
 
 def display_hosts():
@@ -137,15 +141,13 @@ def listen_key(multicast_group="224.0.0.251", keyport=1667):
   while True:
     try:
       data, addr = soc.recvfrom(2048)
-      if addr[0] == IPv4LAN():
-        data, addr = soc.recvfrom(2048)
       if b"---END PUBLIC KEY---" in data and addr[0] != IPv4LAN():
-        pub = RSA.importKey(data)
+        if b"NOREPLY--" not in data:
+          sock.sendto(b"NOREPLY" + public_key, (multicast_group, keyport))
         if addr[0] not in c2_servers.keys():
-          sock.sendto(public_key, (multicast_group, keyport))
+          pub = RSA.importKey(data.replace(b"NOREPLY--",b"--"))
           c2_servers.update({addr[0]:pub})
           print(f"\n\n[JOIN] {addr[0]} has joined.")
-        time.sleep(5)
     except KeyboardInterrupt:
       soc.close()
       break
