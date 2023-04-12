@@ -11,7 +11,7 @@
          .         o    
                                         .
   .      |                
-       --o--    We in your walls   .
+       --o--      MERSA-FULLY      .
          |                                   o
  o             .
 
@@ -25,7 +25,6 @@ Multicast is often forgetten about and rarely utilized within most networks. As 
 import socket
 import sys
 import time
-import struct
 import os.path
 import threading
 from Crypto.PublicKey import RSA
