@@ -258,11 +258,6 @@ mersalog = MLOG()
 
 if __name__ == "__main__":
   
-  if len(sys.argv) <= 1:
-    pemfile = "./private.pem"
-  else:
-    pemfile = sys.argv[1]
-  
   if not os.path.isfile("./private.pem"):
     if "y" in input("Generate new RSA private key? [y/n] ").lower():
       private = RSA.generate(2048)
