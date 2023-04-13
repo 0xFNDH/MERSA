@@ -51,8 +51,6 @@ def IPv4LAN():
   return IP
 
 def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
-  """Returns multicast reciever socket
-  """
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
   try:
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -63,18 +61,13 @@ def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
   sock.bind((address, port))
   host = IPv4LAN()
   sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
-  sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, 
-  socket.inet_aton(address) + socket.inet_aton(host))
+  sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
   sock.settimeout(ttl)
   return sock
 
 def multicast_send(hops=255):
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
   sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
-  
-  #sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(IPv4LAN()))
-  #sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton("224.0.0.251") + socket.inet_aton(IPv4LAN()))
-  
   return sock
 
 def display_hosts():
@@ -83,8 +76,8 @@ def display_hosts():
     print(f"+ -- =[ OPTION: {servers.index(serv)}{' '*(23-len(serv))}{serv} ]")
   print()
 
-def c2_mersa(multicast_group="224.0.0.251", multicast_port=1514, keyport=1667):
-  """This prompts for and sends encrypted messages to hosts.
+def cmd_mersa(public_key, multicast_group="224.0.0.251", multicast_port=1514, keyport=1667):
+  """Command line interface for interacting with hosts.
   """
   print("     =[ Type 'discover' to find hosts.   ]")
   soc = multicast_send()
@@ -96,44 +89,54 @@ def c2_mersa(multicast_group="224.0.0.251", multicast_port=1514, keyport=1667):
         opt = input("MERSA(host-id) % ").strip()
         if opt.lower() == "discover":
           soc.sendto(public_key, (multicast_group, keyport))
+          mersalog.entry("",(IPv4LAN(),keyport),0)
         elif opt in servers:
           break
         elif opt.isdigit():
           opt = servers[int(opt)]
           break
+        elif opt.lower() == "store":
+          mersalog.store()
+          print("[MLOG] Interaction logfile saved.\n")
         else:
           display_hosts()
       except KeyboardInterrupt:
         soc.close()
-        KeyboardInterrupt()
         sys.exit()
       except Exception as e:
         pass
     
-    ciphertext = encrypt(input(f"MERSA({opt}) % ").encode(), c2_servers[opt])
-    
+    plain = input(f"MERSA({opt}) % ").encode()
+    ciphertext = encrypt(plain, c2_servers[opt])
     soc.sendto(ciphertext, (multicast_group, multicast_port))
+    mersalog.entry(plain,(IPv4LAN(),multicast_port),4,opt)
+    print()
     
   soc.close()
 
-def listen_mersa(multicast_port=1514):
-  """Automatically attempts to unencrypt messages using the private key.
+def listen_mersa(private_key, multicast_port=1514):
+  """Automatically attempts to decrypt messages using the private key.
   """
   soc = multicast_recv(multicast_port)
   while True:
+    decrypted = False
     try:
       data, addr = soc.recvfrom(2048)
       if addr[0] != IPv4LAN():
         plaintext = decrypt(data, private_key)
         print(f"\n\n[MSG-RECV][{addr[0]}] {plaintext}")
+        decrypted = True
+        mersalog.entry(plaintext,addr,5)
+      if decrypted == False and addr[0] != IPv4LAN():
+        mersalog.entry(data,addr,6)
     except KeyboardInterrupt:
       soc.close()
       break
     except:
       pass
 
-def listen_key(multicast_group="224.0.0.251", keyport=1667):
-  """Waits for host to send public key and will automatically respond with its own.
+def listen_key(public_key, multicast_group="224.0.0.251", keyport=1667):
+  """Exchanges public keys with other hosts.
   """
   soc = multicast_recv(keyport)
   sock = multicast_send()
@@ -143,10 +146,13 @@ def listen_key(multicast_group="224.0.0.251", keyport=1667):
       if b"---END PUBLIC KEY---" in data and addr[0] != IPv4LAN():
         if b"NOREPLY--" not in data:
           sock.sendto(b"NOREPLY" + public_key, (multicast_group, keyport))
+          mersalog.entry("",addr,1)
+          mersalog.entry("",(IPv4LAN(),keyport),2)
         if addr[0] not in c2_servers.keys():
           pub = RSA.importKey(data.replace(b"NOREPLY--",b"--"))
           c2_servers.update({addr[0]:pub})
           print(f"\n\n[JOIN] {addr[0]} has joined.")
+          mersalog.entry("",addr,3)
     except KeyboardInterrupt:
       soc.close()
       break
@@ -154,7 +160,7 @@ def listen_key(multicast_group="224.0.0.251", keyport=1667):
       pass
 
 def laplace(demon, parm=None, wait=False, prefix="Ld_"):
-  """The Daemon Handler that knows where all the demons are and therefore where they will be.
+  """Daemon handler for creating threads.
   """
   while threading.active_count() > 150:
     time.sleep(0.25)
@@ -182,6 +188,74 @@ def laplace(demon, parm=None, wait=False, prefix="Ld_"):
   else:
     print(f"[Laplace] {demon} is not callable. Consult your python spellbook.")
 
+class MLOG(object):
+  
+  def __init__(self):
+    self.registry = ""
+  
+  def entry(self, data, address, logtype, forward=None):
+    entry_time = time.strftime("[%X%p-%d/%m/%y] ", time.localtime())
+    
+    if address[0] == IPv4LAN():
+      entry_time = "[H]"+entry_time
+    else:
+      entry_time = "[C]"+entry_time
+    
+    if logtype == 0x00:
+      event = "Discovery OUT => "
+      entry_data = "PROBE\n"
+    elif logtype == 0x01:
+      event = "Discovery IN <= "
+      entry_data = "PROBE\n"
+    elif logtype == 0x02:
+      event = "Acknowledgement OUT => "
+      entry_data = "NOREPLY\n"
+    elif logtype == 0x03:
+      event = "Acknowledged IN <= "
+      entry_data = "NOREPLY\n"
+    elif logtype == 0x04:
+      event = "Sent Message: "
+      if type(forward) == type(""):
+        entry_data = f"{str(data)} => {forward}\n"
+      else:
+        entry_data = f"{str(data)}\n"
+    elif logtype == 0x05:
+      event = "Decrypted: "
+      entry_data = f"{str(data)[:32]}\n"
+    elif logtype == 0x06:
+      event = "Unable To Decrypt "
+      entry_data = f"'{str(data)[2:18]}...'\n"
+    else:
+      event = "UNKNOWN ERROR "
+      entry_data = f"{str(data)[2:18]}...\n"
+    
+    source = f"{address[0]}:{address[1]}] "
+    source = "[" + f"{source:>23}"
+    
+    full_entry = "".join((entry_time, source, event, entry_data))
+    
+    self.registry += full_entry
+  
+  def store(self, name=None):
+    if name == None:
+      name = "log_"+time.ctime().replace(" ","")
+    with open(name,"w") as log:
+      log.write("Multicast Encrypted Reverse Shell Application (MERSA) Log\n")
+      log.write(f"Save-Date: {time.ctime()}\n\n")
+      log.write("[H]ost / [C]lient | Time |      SRC:PORT       |    Event    |    DATA    |   *DST    |\n")
+      log.write(self.registry)
+
+def MERSA(private_key, public_key):
+  """Display banner and thread startup.
+  """
+  print(__doc__.split("\n\n")[0])
+  laplace(listen_mersa, (private_key,))
+  laplace(listen_key, (public_key,))
+  cmd_mersa(public_key)
+
+c2_servers = {}
+mersalog = MLOG()
+
 if __name__ == "__main__":
   
   if len(sys.argv) <= 1:
@@ -191,26 +265,20 @@ if __name__ == "__main__":
   
   if not os.path.isfile("./private.pem"):
     if "y" in input("Generate new RSA private key? [y/n] ").lower():
-      private_key = RSA.generate(2048)
+      private = RSA.generate(2048)
       with open("./private.pem","wb") as p:
-        p.write(private_key.exportKey())
+        p.write(private.exportKey())
     else:
       sys.exit()
   else:
     with open("./private.pem") as p:
-      private_key = RSA.importKey(p.read())
+      private = RSA.importKey(p.read())
   
-  public_key = private_key.publickey().exportKey()
-  
-  print(__doc__.split("\n\n")[0])
+  public = private.publickey().exportKey()
   
   if threading.active_count() > 1:
     print(" .   Attempting to exercise %s daemons...    .\n"%(threading.active_count()-1))
     KeyboardInterrupt()
-    time.sleep(3)
+    time.sleep(5)
   
-  c2_servers = {}
-  
-  laplace(listen_mersa)
-  laplace(listen_key)
-  c2_mersa()
+  MERSA(private, public)
