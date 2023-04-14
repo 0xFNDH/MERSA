@@ -57,7 +57,7 @@ def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
   except AttributeError:
     pass
   sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 0)
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
   sock.bind((address, port))
   host = IPv4LAN()
   sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
@@ -98,12 +98,14 @@ def cmd_mersa(public_key, multicast_group="224.0.0.251", multicast_port=1514, ke
         elif opt.lower() == "store":
           mersalog.store()
           print("[MLOG] Interaction logfile saved.\n")
+        elif opt.lower() == "show log":
+          print("\n"+mersalog.registry)
         else:
           display_hosts()
       except KeyboardInterrupt:
         soc.close()
         sys.exit()
-      except Exception as e:
+      except:
         pass
     
     plain = input(f"MERSA({opt}) % ").encode()
@@ -131,7 +133,7 @@ def listen_mersa(private_key, multicast_port=1514):
         mersalog.entry(data,addr,6)
     except KeyboardInterrupt:
       soc.close()
-      break
+      sys.exit()
     except:
       pass
 
@@ -152,10 +154,11 @@ def listen_key(public_key, multicast_group="224.0.0.251", keyport=1667):
           pub = RSA.importKey(data.replace(b"NOREPLY--",b"--"))
           c2_servers.update({addr[0]:pub})
           print(f"\n\n[JOIN] {addr[0]} has joined.")
-          mersalog.entry("",addr,3)
+          if b"NOREPLY--" in data:
+            mersalog.entry("",addr,3)
     except KeyboardInterrupt:
       soc.close()
-      break
+      sys.exit()
     except Exception as e:
       pass
 
@@ -224,13 +227,13 @@ class MLOG(object):
       entry_data = f"{str(data)[:32]}\n"
     elif logtype == 0x06:
       event = "Unable To Decrypt "
-      entry_data = f"'{str(data)[2:18]}...'\n"
+      entry_data = f"'{str(data)[2:18]}...' Bytes:{len(data)}\n"
     else:
       event = "UNKNOWN ERROR "
-      entry_data = f"{str(data)[2:18]}...\n"
+      entry_data = f"'{str(data)[2:18]}...' Bytes:{len(data)}\n"
     
     source = f"{address[0]}:{address[1]}] "
-    source = "[" + f"{source:>23}"
+    source = f"[{source:>23}"
     
     full_entry = "".join((entry_time, source, event, entry_data))
     
@@ -248,7 +251,8 @@ class MLOG(object):
 def MERSA(private_key, public_key):
   """Display banner and thread startup.
   """
-  print(__doc__.split("\n\n")[0])
+  print(__doc__.split("\n\n")[0].replace("MERSA-FULLY",
+  ("MERSA-NARY ","   LO  ","MERSA-FULLY")[RSA.Random.random.randint(0,2)]))
   laplace(listen_mersa, (private_key,))
   laplace(listen_key, (public_key,))
   cmd_mersa(public_key)
