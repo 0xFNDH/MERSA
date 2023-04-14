@@ -1,4 +1,4 @@
-# Multicast Encrypted Reverse Shell Application (MERSA)
+# Multicast Encrypted RSA (MERSA)
 ```
    o       .                         o      .
                       .
@@ -17,7 +17,7 @@
  o             .
 ```
 
-Multicast Encrypted Reverse Shell Application (MERSA) is a POC tool that demonstrates how multicast can be used to bypass point-to-point restrictions on secured network.
+Multicast Encrypted Reverse Shell (MERS) and Multicast Encrypted RSA (MERSA) are PoC tools that demonstrates how multicast can be used to bypass point-to-point network restrictions.
 
 MERSA is a non-vendor specific vulnerability that undermines network security policies by operating on multicast. Multicast uses IGMP (L2) or PIM (L3), depending on the type of network, to route multicast traffic. As a result, some networks' security policies can be bypassed due to gaps in the security controls for multicast routing.
 
