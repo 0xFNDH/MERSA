@@ -15,11 +15,11 @@
          |                                   o
  o             .
 
-Multicast Encrypted Reverse Shell Application (MERSA) is a POC tool that demonstrates how multicast can be used to bypass point-to-point restrictions on secured network.
+Multicast Encrypted Reverse Shell (MERS) and Multicast Encrypted RSA (MERSA) are PoC tools that demonstrates how multicast can be utilized to bypass point-to-point network restrictions.
 
-MERSA is a non-vendor specific vulnerability that undermines network security policies by operating on multicast. Multicast uses IGMP (L2) or PIM (L3), depending on the type of network, to route multicast traffic. As a result, some networks' security policies can be bypassed due to gaps in the security controls for multicast routing.
+MERSA is a non-vendor specific vulnerability that undermines network security policies via multicast. Multicast can use either IGMP (L2) or PIM (L3) and follows a separate method of routing than normal traffic. Due to security control insufficiencies for multicast routing, certain network security policies may be circumvented as a result.
 
-Multicast is often forgetten about and rarely utilized within most networks. As a result, it can be overlooked as a vulnerability. The goal of MERSA is to bring attention to the existing security gaps in networks that have multicast enabled. The best way to mitigate any risks against multicast, is to disable it in the router configuration file.\
+Multicast traffic restrictions are often neglected, creating a potential risk that could go unnoticed. The primary goal of MERSA is to highlight the vulnerabilities posed by multicast-enabled networks. The best way to minimize the risks associated with multicast, is to disable it within the router's configuration files. In the case that disabling multicast is not feasible, extra measures can be taken to ensure multicast traffic is contained.\
 """
 
 import socket
@@ -252,7 +252,7 @@ def MERSA(private_key, public_key):
   """Display banner and thread startup.
   """
   print(__doc__.split("\n\n")[0].replace("MERSA-FULLY",
-  ("MERSA-NARY ","   LO  ","MERSA-FULLY")[RSA.Random.random.randint(0,2)]))
+  ("MERSA-NARY ","MERSA-FULLY","MERSA-DES")[RSA.Random.random.randint(0,2)]))
   laplace(listen_mersa, (private_key,))
   laplace(listen_key, (public_key,))
   cmd_mersa(public_key)
