@@ -1,23 +1,23 @@
 """\
    o       .                         .
                             .
-  .   dBBBBBBb  dBBBP  dBP    dBBBBP.dBBBBP
-     dB'   dB' dB     dB     dB'.BP BP       .
-    dB'dB'dB' dBBP   dBP    dB'.BP  `BBBBb 
-   dB'dB'dB' dBP    dBP    dB'.BP      dBP 
+  .   dBBBBBBb  dBBBP  dBP    dBBBBP dBBBBP
+     dB'   dB' dB     dBP    dB' BP BP'     .
+    dB'dB'dB' dBBP   dBP    dB' BP  'BBBBb 
+   dB'dB'dB' dBP    dBP    dB' BP      dBP 
   dB'dB'dB' dBBBBP dBBBBP dBBBBP  dBBBBP'                 
                                    .
-         .                  .         .
+         .                  .          .
   .      |                
        --o--         LO       .
          |                                o    
    .           .
 
-Multicast Encrypted Low Operations Shell (MELOS) is a POC tool that demonstrates how multicast can be used to bypass point-to-point restrictions on secured network. MELOS is the symetric encrypted version of MERSA that has no foreign library requirements.
+Multicast Encrypted Low Operations Shell (MELOS) is a POC tool that demonstrates how multicast can be utilized to bypass point-to-point network restrictions. MELOS is the symmetric encrypted version of MERSA that has no foreign library requirements.
 
-MELOS is a non-vendor specific vulnerability that undermines network security policies by operating on multicast. Multicast uses IGMP (L2) or PIM (L3), depending on the type of network, to route multicast traffic. As a result, some networks' security policies can be bypassed due to gaps in the security controls for multicast routing.
+MERSA is a non-vendor specific vulnerability that undermines network security policies via multicast. Multicast can use either IGMP (L2) or PIM (L3) and follows a separate method of routing than normal traffic. Due to security control insufficiencies for multicast routing, certain network security policies may be circumvented as a result.
 
-Multicast is often forgetten about and rarely utilized within most networks. As a result, it can be overlooked as a vulnerability. The goal of MELOS is to bring attention to the existing security gaps in networks that have multicast enabled. The best way to mitigate any risks against multicast, is to disable it in the router configuration file.\
+Multicast traffic restrictions are often neglected, creating a potential risk that could go unnoticed. The primary goal of MERSA is to highlight the vulnerabilities posed by multicast-enabled networks. The best way to minimize the risks associated with multicast, is to disable it within the router's configuration files. In the case that disabling multicast is not feasible, extra measures can be taken to ensure multicast traffic is contained.\
 """
 
 import subprocess
