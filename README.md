@@ -1,12 +1,12 @@
 # Multicast Encrypted RSA (MERSA)
-```
+```csharp
    o       .                         o      .
                       .
   .   dBBBBBBb  dBBBBP dBBBBBb  dBBBBP dBBBBBb 
      dB'   dB' dB     dB  dBP BP'          'BB 
-    dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB  .
-   dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB 
-  dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB 
+    dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  .
+   dB'dB'dB' dBP    dBP  BB     'BP  dBP   BB 
+  dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
      .                                          
                                 .
          .         o    
@@ -17,17 +17,11 @@
  o             .
 ```
 
-Multicast Encrypted Reverse Shell (MERS) and Multicast Encrypted RSA (MERSA) are PoC tools that demonstrates how multicast can be used to bypass point-to-point network restrictions.
+Multicast Encrypted Reverse Shell (MERS) and Multicast Encrypted RSA (MERSA) are PoC tools that demonstrates how multicast can be utilized to bypass point-to-point network restrictions.
 
-MERSA is a non-vendor specific vulnerability that undermines network security policies by operating on multicast. Multicast uses IGMP (L2) or PIM (L3), depending on the type of network, to route multicast traffic. As a result, some networks' security policies can be bypassed due to gaps in the security controls for multicast routing.
+MERSA is a non-vendor specific vulnerability that undermines network security policies via multicast. Multicast can use either IGMP (L2) or PIM (L3) and follows a separate method of routing than normal traffic. Due to security control insufficiencies for multicast routing, certain network security policies may be circumvented as a result.
 
-Multicast is often forgetten about and rarely utilized within most networks. As a result, it can be overlooked as a vulnerability. The goal of MERSA is to bring attention to the existing security gaps in networks that have multicast enabled. The best way to mitigate any risks against multicast, is to disable it in the router configuration file.
-
-# Tremeris Kynigoskylo
-
-> MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software. It poses a significantly lower risk and can be easily detected through various network intrusion detection systems and network monitoring applications. Unlike its predecessor, the TK-PoC project was created to covertly extract  files from internal networks without raising any red flags or displaying any unusual activity.
-> Multicast was used as one of the traffic types for TK-PoC to obfuscate files and data into as it was able to bypass network restrictions.
-> Additionally, without multicast logging enabled, it is notably more difficult to locate the specific device(s) that received the extracted files from within the network.
+Multicast traffic restrictions are often neglected, creating a potential risk that could go unnoticed. The primary goal of MERSA is to highlight the vulnerabilities posed by multicast-enabled networks. The best way to minimize the risks associated with multicast, is to disable it within the router's configuration files. In the case that disabling multicast is not feasible, extra measures can be taken to ensure multicast traffic is contained.
 
 # Patching
 
@@ -72,6 +66,16 @@ router(config-if)# end
 
 ```
 
-**Additional Resources**
+# Additional Information
+
+## Attack Scenario
+Imagine that you are in a network that hosts a webserver, but due to network restrictions, you cannot interact with it or observe its traffic. By launching an attack on the external webpage and acquiring code execution, you can utilize MELOS to gain a reverse shell. This will enable you to exfiltrate files and data through the network to your device without being denied by the network. The use of MELOS and MERSA will depend on factors such as the network type, current configurations, and the number of security layers in place. However, if remote code execution is already established, it's probable that multicast has been not considered in the network's security measures.
+
+## Tremeris Kynigoskylo
+MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software. It poses a significantly lower risk and can be easily detected through various network intrusion detection systems and network monitoring applications. Unlike its predecessor, the TK-PoC project was created to covertly extract  files from internal networks without raising any red flags or displaying any unusual activity.
+Multicast was used as one of the traffic types for TK-PoC to obfuscate files and data into as it was able to bypass network restrictions.
+Additionally, without multicast logging enabled, it is notably more difficult to locate the specific device(s) that received the extracted files from within the network. This research has lead to creation of MERSA as a public tool designed to test multicast restrictions.
+
+## Resources
 
 > [Cisco Multicast Commands](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-12/command_reference/b_1612_3850_cr/ip_multicast_routing_commands.html)
