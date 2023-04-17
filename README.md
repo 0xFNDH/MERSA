@@ -3,9 +3,9 @@
    o       .                         o      .
                       .
   .   dBBBBBBb  dBBBBP dBBBBBb  dBBBBP dBBBBBb 
-     dB'   dB' dB     dB  dBP BP'          'BB 
+     dB'   dB' dB     dB  dBP dBP'         'BB 
     dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  .
-   dB'dB'dB' dBP    dBP  BB     'BP  dBP   BB 
+   dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB' 
   dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
      .                                          
                                 .
