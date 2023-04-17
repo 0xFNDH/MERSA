@@ -13,11 +13,13 @@
          |                                o    
    .           .
 
-Multicast Encrypted Low Operations Shell (MELOS) is a POC tool that demonstrates how multicast can be utilized to bypass point-to-point network restrictions. MELOS is the symmetric encrypted version of MERSA that has no foreign library requirements.
+Multicast Encrypted Low Operations Shell (MELOS) is a POC tool that demonstrates how multicast can be utilized to
+bypass point-to-point network restrictions. MELOS is the symmetric encrypted version of MERSA that has no foreign library requirements.
 
-MERSA is a non-vendor specific vulnerability that undermines network security policies via multicast. Multicast can use either IGMP (L2) or PIM (L3) and follows a separate method of routing than normal traffic. Due to security control insufficiencies for multicast routing, certain network security policies may be circumvented as a result.
-
-Multicast traffic restrictions are often neglected, creating a potential risk that could go unnoticed. The primary goal of MERSA is to highlight the vulnerabilities posed by multicast-enabled networks. The best way to minimize the risks associated with multicast, is to disable it within the router's configuration files. In the case that disabling multicast is not feasible, extra measures can be taken to ensure multicast traffic is contained.\
+Multicast-Tunneling is a vulnerability that is not specific to any vendor and affects networks without the appropriate controls for multicast traffic.
+It occurs when multicast packets from one network segment can reach restricted servers or devices on another segment.
+Multicast uses protocols IGMP (L3) or PIM (L2) to route packets and works above the Internet Protocol (IP). 
+This enables a connection between two unintended network segments that can be utilized for lateral movement, aiding in the extraction of information or the control over devices across the network.\
 """
 
 import subprocess
