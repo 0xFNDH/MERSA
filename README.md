@@ -41,20 +41,24 @@ Multicast traffic restrictions are often neglected, creating a potential risk th
 ```ruby
 ! Disable all multicast traffic
 router(config)# no ip multicast-routing
+router(config)# no ip igmp
+router(config)# no ip pim
 
 ! Disable multicast on a specific interface
 router(config)# interface gigabitethernet 0/0/0
-router(config-if)# no ip igmp
 router(config-if)# no ip multicast-routing
+router(config-if)# no ip igmp
+router(config-if)# no ip pim
 router(config-if)# end
 ```
 
 **How to log multicast interactions for Cisco IOS XE Everest 16.6.1+**
+> Enabling logs can assist the incident response team in investigating a breach.
 ```ruby
 ! Permit a range for allowed multicast channels
 router(config)# ip igmp profile 40
 router(config-igmp-profile)# permit
-router(config-igmp-profile)# range 224.1.1.1 233.255.255.255
+router(config-igmp-profile)# range 224.0.0.1 233.255.255.255
 router(config-igmp-profile)# exit
 router(config)# interface gigabitethernet 0/0/0
 router(config-if)# switchport
@@ -75,16 +79,34 @@ router(config-if)# end
 
 ```
 
+**How to prevent unnecessary forwarding of multicast packets Cisco IOS XE 3.2SE+**
+> Network switches may be unaware of which network devices are part of multicast groups, and which are not. It may end up forwarding multicast traffic to devices that do not need it, which takes up network bandwidth and device processing power, slowing the entire network down. IGMP Snooping allows the switch to follow communications and stop forwarding packets when unnecessary.
+```ruby
+! Enable IGMP Snooping Globally
+router(config)# ip igmp snooping
+! Enable IGMP Snooping for a VLAN
+router(config)# ip igmp snooping vlan 10
+
+! PIM Sparse Mode (PIM-SM) will reduce the spread of multicast traffic
+router(config)# interface gigabitethernet 0/0/0
+router(config-if)# ip pim sparse-mode
+router(config-if)# end
+```
+
 # Additional Information
 
 ## Attack Scenario
-Imagine that you are in a network that hosts a webserver, but due to network restrictions, you cannot interact with it or observe its traffic. By launching an attack on the external webpage and acquiring code execution, you can utilize MELOS to gain a reverse shell. This will enable you to exfiltrate files and data through the network to your device without being denied by the current policies. The use of MELOS and MERSA will depend on factors such as the network type, current configurations, and the number of security layers in place. However, if remote code execution is already established, it's probable that multicast has been not considered in the network's security measures.
+> Imagine that you are in a network that hosts a webserver, but due to network restrictions, you cannot interact with it or observe its traffic. By launching an attack on the external webpage and acquiring code execution, you can utilize MELOS to gain a reverse shell. This will enable you to exfiltrate files and data through the network to your device without being denied by the current policies. The use of MELOS and MERSA will depend on factors such as the network type, current configurations, and the number of security layers in place. However, if remote code execution is already established, it's probable that multicast has been not considered in the network's security measures.
 
 ## Tremeris Kynigoskylo
-MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software. It poses a significantly lower risk and can be easily detected through various network intrusion detection systems and network monitoring applications. Unlike its predecessor, the TK-PoC project was created to covertly extract  files from internal networks without raising any red flags or displaying any unusual activity.
+> MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software. It poses a significantly lower risk and can be easily detected through various network intrusion detection systems and network monitoring applications. Unlike its predecessor, the TK-PoC project was created to covertly extract  files from internal networks without raising any red flags or displaying any unusual activity.
 Multicast was used as one of the traffic types for TK-PoC to obfuscate files and data into as it was able to bypass IP network restrictions.
 Additionally, without multicast logging enabled, it is notably more difficult to locate the specific device(s) that received the extracted files from within the network. This research has lead to creation of MERSA as a public tool designed to test multicast restrictions.
 
 ## Resources
 
 > [Cisco Multicast Commands](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3850/software/release/16-12/command_reference/b_1612_3850_cr/ip_multicast_routing_commands.html)
+
+> [Cloudflare IGMP Introduction](https://www.cloudflare.com/learning/network-layer/what-is-igmp/)
+
+> [IANA Multicast Addresses](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml)
