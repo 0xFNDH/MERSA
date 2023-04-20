@@ -34,9 +34,13 @@ Multicast traffic restrictions are often neglected, creating a potential risk th
 
 # Patching
 
+> Configuring your network with VLANs and proper configurations can mitigate most of the risks associated with multicast.
+
 > Please consult your network administrator prior to making any changes to router configurations. Making unscheduled modifications to the configurations can have adverse effects on the services or devices operating within the network.
 
 **How to disable multicast for Cisco IOS XE 3.2SE+**
+
+> We advise disabling multicast on the interfaces that face public access points. This helps prevent potential issues that may arise from globally disabling multicast. 
 
 ```ruby
 ! Disable all multicast traffic
