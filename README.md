@@ -22,8 +22,8 @@
  - [Documentation](./README.md#About)
  - [PoC Testing Tools](./PoC/)
  - [Configuration Solutions](./README.md#Patching)
- - [Program Usage Example](./README.md#MELOS)
- - [Additional Information](./README.md#Resources)
+ - [Program Usage Example](./README.md#MELOS-Usage)
+ - [Additional Information](./README.md#Additional-Information)
 
 # About
 
