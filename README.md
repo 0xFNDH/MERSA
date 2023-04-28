@@ -132,10 +132,10 @@ root
 ## Attack Scenario
 > Imagine that you are in a network that hosts a webserver, but due to network restrictions, you cannot interact with it or observe its traffic. By launching an attack on the external webpage and acquiring code execution, you can utilize MELOS to gain a reverse shell. This will enable you to exfiltrate files and data through the network to your device without being denied by the current policies. The use of MELOS and MERSA will depend on factors such as the network type, current configurations, and the number of security layers in place. However, if remote code execution is already established, it's probable that multicast has been not considered in the network's security measures.
 
-## Tremeris Kynigoskylo
-> MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software. It poses a significantly lower risk and can be easily detected through various network intrusion detection systems and network monitoring applications. Unlike its predecessor, the TK-PoC project was created to covertly extract  files from internal networks without raising any red flags or displaying any unusual activity.
-Multicast was used as one of the traffic types for TK-PoC to obfuscate files and data into as it was able to bypass IP network restrictions.
-Additionally, without multicast logging enabled, it is notably more difficult to locate the specific device(s) that received the extracted files from within the network. This research has lead to creation of MERSA as a public tool designed to test multicast restrictions.
+## Tremeris Kynigoskylo (Three Headed Hound)
+> MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software developed by 0xFNDH. MERSA poses a significantly lower risk and can be detected through various network intrusion detection systems and network monitoring applications. However, TK-PoC was created to covertly extract files from internal networks without being detected or displaying any unusual activity. MERSA and MELOS are proof-of-concept and do NOT demonstrate the full exploitability of multicast. If your goal is to maximize the effective security of your network, please take into consideration how protocols like multicast move throughout your network.
+
+> This research is designed to raise awareness of the potential risks associated with IGMP and multicast. 
 
 ## Resources
 
