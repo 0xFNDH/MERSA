@@ -27,7 +27,7 @@
 
 # About
 
-Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are PoC tools that demonstrate how multicast can be used to undermine network security policies and bypass point-to-point network restrictions.
+Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are PoC tools that demonstrate how multicast can be used to undermine network security policies and bypass client isolation/AP isolation restrictions.
 
 Multicast-Tunneling is a vulnerability that is not specific to any vendor and affects networks without the appropriate controls for multicast traffic. It occurs when multicast packets from one network segment can reach restricted servers or devices on another segment. Multicast uses protocols IGMP (L3) or PIM (L2) to route packets and works above the Internet Protocol (IP). This enables a connection between two unintended network segments that can be utilized for lateral movement, aiding in the extraction of information or the control over devices across the network.
 
