@@ -1,9 +1,9 @@
 # Multicast Encrypted RSA (MERSA)
-```csharp
+```python
    o       .                         o      .
                       .
   .   dBBBBBBBb dBBBBP dBBBBBb  dBBBBP dBBBBBb 
-     dB'   'dP dB     dB  dBP dBP'         'BB 
+     dB'   'dP dB     dB  dBP dBP'         'BB' 
     dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  .
    dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB' 
   dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
@@ -125,6 +125,21 @@ $ python3 melos.py --cmd --password M3L05
 melos@224.0.0.251:10050 $ whoami
      =[ Packet From 10.250.60.15:55000  ]
 root
+```
+
+# MERSA Usage
+
+```python
+$ python3 mersa.py
+
+     =[ Type 'discover' to find hosts.   ]
+
+MERSA(host-id) % discover
+[JOIN] 10.200.40.5:55000 has joined.
+MERSA(host-id) % 0
+MERSA(10.200.40.5) % hi
+[MSG-RECV][10.200.40.5:55000] b'hello'
+
 ```
 
 # Additional Information
