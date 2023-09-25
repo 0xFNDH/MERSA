@@ -25,11 +25,11 @@
 
 # About
 
-The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are tools that demonstrate this by undermining network security policies and bypassing Client/AP isolation.
+The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are tools that demonstrate this by undermining network security policies and bypassing Client/AP isolation. Please do not use in military or secret service organizations, or for illegal purposes. These tools are meant for authorized parties with legal consent to conduct testing.
 
-The idea for MERSA is based on the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and information gathering. During a penetration test, once multiple devices have been compromised, MERSA can be run to execute commands on a device over multicast while evading certain network security controls. This methodology can also reduce the footprint of activity on the network during a penetration test.
+The idea for MERSA is based on the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and information gathering. During a penetration test, once multiple devices have been compromised, MERSA can be run to execute commands over multicast while evading certain network security controls. The use of multicast may also reduce the footprint of activity on the network during a penetration test.
 
-MERSA can also create an opportunity for lateral movement within or across segments, depending on router configurations, once access to a device within a separate segment has been obtained. Multicast uses either IGMP (L3) or PIM (L2) to route packets and operates outside of the Internet Protocol (IP). Therefore, security controls for Internet Protocol traffic do not affect multicast as long as the devices are in the same VLAN.
+MERSA can create an opportunity for lateral movement within or across segments, depending on router configurations, once access to a device within a separate segment has been obtained. Multicast uses either IGMP (L3) or PIM (L2) to route packets and operates outside of the Internet Protocol (IP). Therefore, security controls for Internet Protocol traffic do not affect multicast as long as the devices are in the same VLAN. Network Intrusion Detection Systems (NIDS) may be weak to multicast obfuscation if they do not properly monitor and control multicast traffic.
 
 # Patching
 
@@ -140,15 +140,25 @@ MERSA(10.200.40.5) % hi
 
 ```
 
+# Attack Scenario
+### Unicast Enabled Network
+In unicast-enabled networks, the main benefit of MERSA is the evasiveness of multicast and its ability to avoid certain security devices. Not all Network Intrusion Detection Systems (NIDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern. Anomalous systems that have been exposed to multicast traffic, such as MDNS, prior to an attack, are some of the most susceptible to programs like TK-POC [(read more)](./README.md#Additional-Information).
+
+In this scenario, the attacker would simply need to conduct data exfiltration over multicast using either MERSA or MELOS after obtaining access to a machine.
+
+### Unicast Disabled Network
+In a network that employs Client/AP isolation, IP packets sent from one device to another cannot be received. In this context, there are two different scenarios in which MERSA is benefitial.
+
+In the first scenario, the attacker is already within the local administrative network and seeks to obtain files from a server exposed externally. By infiltrating the server from the outside and deploying MELOS, the attacker gains the ability to execute commands from the internal network. This is significant because firewalls and other systems often impose stricter regulations on outgoing traffic. Since multicast operates on both Layer 2 and Layer 3, it avoids the firewall when data is sent within the LAN.
+
+The second scenario involves the attacker gaining physical access to multiple workstations in a network with Client/AP isolation. If the attacker were to install MERSA on these workstations, they would have a shell that they could control from within the network and exfiltrate information from.
+
 # Additional Information
 
-## Attack Scenario
-> Imagine that you are in a network that hosts a webserver, but due to network restrictions, you cannot interact with it or observe its traffic. By launching an attack on the external webpage and acquiring code execution, you can utilize MELOS to gain a reverse shell. This will enable you to exfiltrate files and data through the network to your device without being denied by the current policies. The use of MELOS and MERSA will depend on factors such as the network type, current configurations, and the number of security layers in place. However, if remote code execution is already established, it's probable that multicast has been not considered in the network's security measures.
-
 ## Tremeris Kynigoskylo (Three Headed Hound)
-> MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software developed by 0xFNDH. MERSA poses a significantly lower risk and can be detected through various network intrusion detection systems and network monitoring applications. However, TK-PoC was created to covertly extract files from internal networks without being detected or displaying any unusual activity. MERSA and MELOS are proof-of-concept and do NOT demonstrate the full exploitability of multicast. If your goal is to maximize the effective security of your network, please take into consideration how protocols like multicast move throughout your network.
+> MERSA is a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) software developed by 0xFNDH. MERSA poses a significantly lower risk and can be detected through various network intrusion detection systems and network monitoring applications. However, TK-PoC was created to covertly extract files from internal networks without being detected or displaying any unusual activity. TK-PoC does not expose the device that is receiving the exfiltrated data, and it is also aided by the fact that Cisco does not log multicast traffic by default. MERSA and MELOS are proof-of-concept and do NOT demonstrate the full exploitability of multicast. If your goal is to maximize the effective security of your network, please take into consideration how protocols like multicast move throughout your network.
 
-> This research is designed to raise awareness of the potential risks associated with IGMP and multicast. 
+> This research is designed to raise awareness of the potential risks associated with multicast. 
 
 ## Resources
 
@@ -157,3 +167,5 @@ MERSA(10.200.40.5) % hi
 > [Cloudflare IGMP Introduction](https://www.cloudflare.com/learning/network-layer/what-is-igmp/)
 
 > [IANA Multicast Addresses](https://www.iana.org/assignments/multicast-addresses/multicast-addresses.xhtml)
+
+> [Secure Multicast Communication of MANET](https://link.springer.com/article/10.1007/s11276-015-1065-2)
