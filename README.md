@@ -25,11 +25,11 @@
 
 # About
 
-Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are PoC tools that demonstrate how multicast can be used to undermine network security policies and bypass client isolation/AP isolation restrictions.
+The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are tools that demonstrate this by undermining network security policies and bypassing Client/AP isolation.
 
-Multicast-Tunneling is a vulnerability that is not specific to any vendor and affects networks without the appropriate controls for multicast traffic. It occurs when multicast packets from one network segment can reach restricted servers or devices on another segment. Multicast uses protocols IGMP (L3) or PIM (L2) to route packets and works above the Internet Protocol (IP). This enables a connection between two unintended network segments that can be utilized for lateral movement, aiding in the extraction of information or the control over devices across the network.
+The idea for MERSA is based on the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and information gathering. During a penetration test, once multiple devices have been compromised, MERSA can be run to execute commands on a device over multicast while evading certain network security controls. This methodology can also reduce the footprint of activity on the network during a penetration test.
 
-Multicast traffic restrictions are often neglected, creating a potential risk that could go unnoticed. The primary goal of MERSA is to highlight the potential vulnerabilities imposed by multicast. The best way to minimize these risks, is to disable it on the restricted interfaces in router's configuration files. In the case that disabling multicast is not feasible, extra measures can be taken to ensure multicast traffic is contained.
+MERSA can also create an opportunity for lateral movement within or across segments, depending on router configurations, once access to a device within a separate segment has been obtained. Multicast uses either IGMP (L3) or PIM (L2) to route packets and operates outside of the Internet Protocol (IP). Therefore, security controls for Internet Protocol traffic do not affect multicast as long as the devices are in the same VLAN.
 
 # Patching
 
