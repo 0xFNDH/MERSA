@@ -1,26 +1,24 @@
 """\
-   o       .                         o      .
+     o       .                         o      .
                       .
-  .   dBBBBBBb  dBBBBP dBBBBBb  dBBBBP dBBBBBb 
-     dB'   dB' dB     dB  dBP BP'          'BB 
-    dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB  .
-   dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB 
-  dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB 
-     .                                          
-                                .
-         .         o    
-                                        .
-  .      |                
-       --o--      MERSA-FULLY      .
-         |                                   o
- o             .
+    .   dBBBBBBBb dBBBBP dBBBBBb  dBBBBP dBBBBBb 
+       dB'   'dP dB     dB  dBP dBP'         'BB' 
+      dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  
+     dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB' 
+    dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
+       .                       o                  
+                    .                     .    
+  .       |      
+        --o--     MERSA by 0xFNDH     .
+          | Zero eXcuses For Non-Dreamers    o
+      o               .  
 
-Multicast Encrypted Reverse Shell (MERS) and Multicast Encrypted RSA (MERSA) are PoC tools that demonstrates how multicast can be utilized to bypass point-to-point network restrictions.
+Multicast Encrypted RSA (MERSA) is a PoC tool that demonstrates how multicast can be utilized to bypass point-to-point network restrictions.
+MERSA allows for the communication of multiple devices over multicast using asymmetrical encryption with RSA.
+MERSA is an autonomous program that doesn't depend on a single endpoint or client server.
 
-Multicast-Tunneling is a vulnerability that is not specific to any vendor and affects networks without the appropriate controls for multicast traffic.
-It occurs when multicast packets from one network segment can reach restricted servers or devices on another segment.
-Multicast uses protocols IGMP (L3) or PIM (L2) to route packets and works above the Internet Protocol (IP). 
-This enables a connection between two unintended network segments that can be utilized for lateral movement, aiding in the extraction of information or the control over devices across the network.\
+Please do not use in military or secret service organizations, or for illegal purposes.
+These tools are meant for authorized parties with legal consent to conduct testing.\
 """
 
 import socket
