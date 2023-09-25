@@ -1,20 +1,18 @@
 # Multicast Encrypted RSA (MERSA)
 ```python
-   o       .                         o      .
+     o       .                         o      .
                       .
-  .   dBBBBBBBb dBBBBP dBBBBBb  dBBBBP dBBBBBb 
-     dB'   'dP dB     dB  dBP dBP'         'BB' 
-    dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  .
-   dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB' 
-  dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
-     .                                          
-                                .
-         .         o    
-                                        .
-  .      |      
-       --o--      MERSA-FULLY      .
-         |                                   o
- o             .
+    .   dBBBBBBBb dBBBBP dBBBBBb  dBBBBP dBBBBBb 
+       dB'   'dP dB     dB  dBP dBP'         'BB' 
+      dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  
+     dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB' 
+    dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
+       .                       o                  
+                    .                     .    
+  .       |      
+        --o--     MERSA by 0xFNDH     .
+          | Zero eXcuses For Non-Dreamers    o
+      o               .  
 ```
 
 # Overview
