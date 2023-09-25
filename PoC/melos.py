@@ -1,25 +1,23 @@
 """\
-   o       .                         .
-                            .
-  .   dBBBBBBb  dBBBP  dBP    dBBBBP dBBBBP
-     dB'   dB' dB     dBP    dB' BP BP'     .
-    dB'dB'dB' dBBP   dBP    dB' BP  'BBBBb 
-   dB'dB'dB' dBP    dBP    dB' BP      dBP 
-  dB'dB'dB' dBBBBP dBBBBP dBBBBP  dBBBBP'                 
-                                   .
-         .                  .          .
-  .      |                
-       --o--        LO        .
-         |                                o    
-   .           .
+     o       .                         .
+                              .
+    .    dBBBBBBb  dBBBP  dBP    dBBBBP dBBBBP
+        dB'   dB' dB     dBP    dB' BP BP'      .
+       dB'dB'dB' dBBP   dBP    dB' BP  'BBBBb 
+      dB'dB'dB' dBP    dBP    dB' BP      dBP 
+     dB'dB'dB' dBBBBP dBBBBP dBBBBP  dBBBBP'                 
+       .                       o                  
+                    .                     .    
+  .       |      
+        --o--     MELOS by 0xFNDH     .
+          | Zero eXcuses For Non-Dreamers    o
+      o               .  
 
-Multicast Encrypted Low Operations Shell (MELOS) is a POC tool that demonstrates how multicast can be utilized to
-bypass point-to-point network restrictions. MELOS is the symmetric encrypted version of MERSA that has no foreign library requirements.
+Multicast Encrypted Low Operations Shell (MELOS) is a PoC tool that demonstrates how multicast can be utilized to
+bypass point-to-point network restrictions. MELOS is the single symmetric encrypted version of MERSA that has no foreign library requirements.
 
-Multicast-Tunneling is a vulnerability that is not specific to any vendor and affects networks without the appropriate controls for multicast traffic.
-It occurs when multicast packets from one network segment can reach restricted servers or devices on another segment.
-Multicast uses protocols IGMP (L3) or PIM (L2) to route packets and works above the Internet Protocol (IP). 
-This enables a connection between two unintended network segments that can be utilized for lateral movement, aiding in the extraction of information or the control over devices across the network.\
+Please do not use in military or secret service organizations, or for illegal purposes.
+These tools are meant for authorized parties with legal consent to conduct testing.\
 """
 
 import subprocess
