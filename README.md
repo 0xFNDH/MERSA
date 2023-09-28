@@ -11,7 +11,7 @@
                     .                     .    
   .       |      
         --o--     MERSA by 0xFNDH     .
-          | Zero eXcuses For Non-Dreamers    o
+          | Zero eXcuses For Non-Dreamers     o
       o               .  
 ```
 
@@ -29,7 +29,7 @@ The goal of the PoC is to highlight the security issues of multicast-enabled net
 
 The idea for MERSA is based on the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and information gathering. During a penetration test, once multiple devices have been compromised, MERSA can be run to execute commands over multicast while evading certain network security controls. The use of multicast may also reduce the footprint of activity on the network during a penetration test.
 
-MERSA can create an opportunity for lateral movement within or across segments, depending on router configurations, once access to a device within a separate segment has been obtained. Multicast uses either IGMP (L3) or PIM (L2) to route packets and operates outside of the Internet Protocol (IP). Therefore, security controls for Internet Protocol traffic do not affect multicast as long as the devices are in the same VLAN. Network Intrusion Detection Systems (NIDS) may be weak to multicast obfuscation if they do not properly monitor and control multicast traffic.
+MERSA can only communicate to devices contained within the same VLAN. Multicast uses both IGMP (L3) or PIM (L2) to route packets and operates outside of Internet Protocol (IP). Security controls that are specific for internet protocol do not affect multicast traffic. Network Intrusion Detection Systems (NIDS) may be weak to multicast obfuscation techniques if they do not properly monitor and control multicast traffic.
 
 # Patching
 
