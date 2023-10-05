@@ -250,8 +250,7 @@ class MLOG(object):
 def MERSA(private_key, public_key):
   """Display banner and thread startup.
   """
-  print(__doc__.split("\n\n")[0].replace("MERSA-FULLY",
-  ("MERSA-NARY ","MERSA-FULLY","MERSA-DES")[RSA.Random.random.randint(0,2)]))
+  print(__doc__.split("\n\n")[0])
   laplace(listen_mersa, (private_key,))
   laplace(listen_key, (public_key,))
   cmd_mersa(public_key)
