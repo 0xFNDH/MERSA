@@ -26,8 +26,13 @@ import sys
 import time
 import os.path
 import threading
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
+try:
+  from Crypto.PublicKey import RSA
+  from Crypto.Cipher import PKCS1_OAEP
+except:
+  print("=== pycryptodome not installed ===")
+  print("Use 'melos.py' for testing instead")
+  sys.exit()
 
 def encrypt(plaintext, public_key):
   cipher = PKCS1_OAEP.new(public_key)
