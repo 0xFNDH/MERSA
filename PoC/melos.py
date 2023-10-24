@@ -157,9 +157,9 @@ if __name__ == "__main__":
     print("    =[ Use -p or --password to set password ]")
     print("    =[ Use -g or --group to set multicast IP]\n")
     sys.exit()
-  
+
+  password = "default"
   if ("-p" not in sys.argv or "--password" not in sys.argv) and len(sys.argv) <= 3:
-    password = "default"
     print("    =[ Password is set to default!      ]")
   else:
     if "-p" in sys.argv:
