@@ -10,7 +10,7 @@
                     .                     .    
   .       |      
         --o--     MELOS by 0xFNDH     .
-          | Zero eXcuses For Non-Dreamers    o
+          | Zero eXcuses For Non-Dreamers     o
       o               .  
 
 Multicast Encrypted Low Operations Shell (MELOS) is a PoC tool that demonstrates how multicast can be utilized to
@@ -52,7 +52,10 @@ def IPv4LAN():
   return IP
 
 def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
-  uname = list(os.uname())[0]
+  try:
+    uname = list(os.uname())[0]
+  except:
+    uname = os.name
   if uname == "Linux":
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -74,6 +77,21 @@ def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
     host = IPv4LAN()
     sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
     sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
+    sock.settimeout(ttl)
+    return sock
+
+  elif uname == "nt":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    try:
+      sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    except AttributeError:
+      pass
+    host = IPv4LAN()
+    sock.bind((host, port))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
     sock.settimeout(ttl)
     return sock
 
@@ -136,7 +154,8 @@ if __name__ == "__main__":
   if len(sys.argv) == 1 or sys.argv[-1] == "-p" or "-h" in sys.argv:
     print("    =[ Use -l or --listen to start listener ]")
     print("    =[ Use -c or --cmd to control listener  ]")
-    print("    =[ Use -p or --password to set password ]\n")
+    print("    =[ Use -p or --password to set password ]")
+    print("    =[ Use -g or --group to set multicast IP]\n")
     sys.exit()
   
   if ("-p" not in sys.argv or "--password" not in sys.argv) and len(sys.argv) <= 3:
@@ -148,11 +167,18 @@ if __name__ == "__main__":
     elif "--password" in sys.argv:
       password = sys.argv[sys.argv.index("--password")+1]
   
+  if "-g" in sys.argv:
+    groupaddr = sys.argv[sys.argv.index("-g")+1]
+  elif "--group" in sys.argv:
+    groupaddr = sys.argv[sys.argv.index("--group")+1]
+  else:
+    groupaddr = "224.0.0.251"
+  
   for arg in ["-c", "--cmd"]:
     if arg in sys.argv:
-      melos_cmd(password)
+      melos_cmd(password, groupaddr)
       sys.exit()
   for arg in ["-l", "--listen"]:
     if arg in sys.argv:
-      melos_shell(password)
+      melos_shell(password, groupaddr)
       sys.exit()
