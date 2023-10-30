@@ -125,7 +125,7 @@ def melos_shell(password, multicast_group="224.0.0.251", commandport=10020, resp
       pass
 
 def melos_cmd(password, multicast_group="224.0.0.251", commandport=10020, recvport=10050):
-  print(f"    =[ MELOS C2 {multicast_group}:{recvport}       ]\n")
+  print(f"    =[ MELOS C2 Sending to {multicast_group}:{commandport} ]\n")
   listen = multicast_recv(recvport, multicast_group, ttl=5)
   sock = multicast_send()
   while True:
@@ -151,28 +151,31 @@ if __name__ == "__main__":
   
   print(__doc__.split("\n\n")[0])
   
-  if len(sys.argv) == 1 or sys.argv[-1] == "-p" or "-h" in sys.argv:
-    print("    =[ Use -l or --listen to start listener ]")
-    print("    =[ Use -c or --cmd to control listener  ]")
+  if len(sys.argv) == 1 or "-h" in sys.argv:
+    print("    =[ Use -l or --listen to start listener ]*")
+    print("    =[ Use -c or --cmd to control listener  ]*")
     print("    =[ Use -p or --password to set password ]")
-    print("    =[ Use -g or --group to set multicast IP]\n")
+    print("    =[ Use -g or --group to set multi group ]\n")
     sys.exit()
 
   password = "default"
   if ("-p" not in sys.argv or "--password" not in sys.argv) and len(sys.argv) <= 3:
-    print("    =[ Password is set to default!      ]")
+    print("    =[ Password is set to default!          ]")
+    print("    =[ Use -p or --password to set password ]")
   else:
     if "-p" in sys.argv:
       password = sys.argv[sys.argv.index("-p")+1]
     elif "--password" in sys.argv:
       password = sys.argv[sys.argv.index("--password")+1]
   
+  groupaddr = "224.0.0.251"
   if "-g" in sys.argv:
     groupaddr = sys.argv[sys.argv.index("-g")+1]
   elif "--group" in sys.argv:
     groupaddr = sys.argv[sys.argv.index("--group")+1]
-  else:
-    groupaddr = "224.0.0.251"
+  if groupaddr.startswith("224.") == False:
+    print("    =[ Invalid multicast address provided   ]\n")
+    sys.exit()
   
   for arg in ["-c", "--cmd"]:
     if arg in sys.argv:
@@ -182,3 +185,5 @@ if __name__ == "__main__":
     if arg in sys.argv:
       melos_shell(password, groupaddr)
       sys.exit()
+  
+  print("    =[ Key arguments not set, use -h for help ]\n")
