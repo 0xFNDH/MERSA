@@ -142,16 +142,16 @@ MERSA(10.200.40.5) % hi
 
 # Attack Scenario
 ### Unicast Enabled Network
-In unicast-enabled networks, the main benefit of MERSA is the evasiveness of multicast and its ability to avoid certain security devices. Not all Network Intrusion Detection Systems (NIDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern. Anomalous systems that have been exposed to multicast traffic, such as MDNS, prior to an attack, are some of the most susceptible to programs like TK-POC [(read more)](./README.md#Additional-Information).
+In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security devices. Not all Network Intrusion Detection Systems (NIDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern. Anomalous systems that have been exposed to multicast traffic, such as MDNS, prior to an attack, are some of the most susceptible to programs like TK-POC [(read more)](./README.md#Additional-Information).
 
 In this scenario, the attacker would simply need to conduct data exfiltration over multicast using either MERSA or MELOS after obtaining access to a machine.
 
 ### Unicast Disabled Network
 In a network that employs Client/AP isolation, IP packets sent from one device to another cannot be received. In this context, there are two different scenarios in which MERSA is benefitial.
 
-In the first scenario, the attacker is already within the local administrative network and seeks to obtain files from a server exposed externally. By infiltrating the server from the outside and deploying MELOS, the attacker gains the ability to execute commands from the internal network. This is significant because firewalls and other systems often impose stricter regulations on outgoing traffic. Since multicast operates on both Layer 2 and Layer 3, it avoids the firewall when data is sent within the LAN.
+In the first scenario, the attacker is already within the local administrative network and seeks to obtain files from a public facing server. By infiltrating the server from the outside and deploying MELOS, the attacker gains the ability to execute commands from the internal network. This is significant because firewalls and other systems often impose stricter regulations on outgoing traffic and Client/AP isolation would prevent the viewing of external traffic.
 
-The second scenario involves the attacker gaining physical access to multiple workstations in a network with Client/AP isolation. If the attacker were to install MERSA on these workstations, they would have a shell that they could control from within the network and exfiltrate information from.
+The second scenario involves the attacker gaining physical access to multiple workstations in a network with Client/AP isolation. If the attacker were to install MELOS on these workstations, they would have a shell that they could control from within the network and exfiltrate information from.
 
 # Additional Information
 
