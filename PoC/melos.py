@@ -1,20 +1,21 @@
 """\
-     o       .                         .
-                              .
-    .    dBBBBBBb  dBBBP  dBP    dBBBBP dBBBBP
-        dB'   dB' dB     dBP    dB' BP BP'      .
-       dB'dB'dB' dBBP   dBP    dB' BP  'BBBBb 
-      dB'dB'dB' dBP    dBP    dB' BP      dBP 
-     dB'dB'dB' dBBBBP dBBBBP dBBBBP  dBBBBP'                 
-       .                       o                  
-                    .                     .    
-  .       |      
-        --o--     MELOS by 0xFNDH     .
-          | Zero eXcuses For Non-Dreamers     o
-      o               .  
+     o       .                         o      .
+                      .
+   .        dBBBBBBb  dBBBP  dBP    dBBBBP dBBBBP 
+           dB'   dB' dB     dBP    dB' BP BP'      .
+          dB'dB'dB' dBBP   dBP    dB' BP  'BBBBb 
+         dB'dB'dB' dBP    dBP    dB' BP      dBP      .
+        dB'dB'dB' dBBBBP dBBBBP dBBBBP  dBBBBP'      .'.
+       .      Configuration Vulnerability            |o|
+                    .           o              .    .'o'.
+  .      |                                          |._.|
+       --o--        MELOS by 0xFNDH       .         '   '
+         | Zero eXcuses For Non-Dreamers Here        ) (
+      o               .                        .    (   )
 
-Multicast Encrypted Low Operations Shell (MELOS) is a PoC tool that demonstrates how multicast can be utilized to
-bypass point-to-point network restrictions. MELOS is the single symmetric encrypted version of MERSA that has no foreign library requirements.
+Multicast Encrypted Light Operations Shell (MELOS) is a proof-of-concept reverse shell
+tool based on the post-exploitation stage of the penetration testing process. It uses
+multicast as an evasive method to establish command-and-control (C2) and conduct data exfiltration.
 
 Please do not use in military or secret service organizations, or for illegal purposes.
 These tools are meant for authorized parties with legal consent to conduct testing.\
