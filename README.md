@@ -1,4 +1,4 @@
-# Multicast Misconfiguration Vulnerability: MERSA & MELOS
+# Network Evasion With Multicast: MERSA & MELOS
 
 ```Python
      o       .                         o      .
@@ -8,7 +8,7 @@
 .       dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  
        dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB'  
       dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB'     .
-       .     Misconfiguration Vulnerability          .'.
+       .      Configuration Vulnerability            .'.
                     .           o              .     |o|
   .      |                                          .'o'.
        --o--        MERSA by 0xFNDH       .         |._.|
@@ -27,7 +27,7 @@
 
 # About
 
-The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Low Operations Shell (MELOS) are tools that demonstrate how multicast is vulnerable to attacks and evasion techniques by undermining network security policies and bypassing Client/AP isolation. Please do not use in military or secret service organizations, or for illegal purposes. These tools are meant for authorized parties with legal consent to conduct testing.
+The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Light Operations Shell (MELOS) are tools that demonstrate how multicast is vulnerable to attacks and evasion techniques by undermining network security policies and bypassing Client/AP isolation. Please do not use in military or secret service organizations, or for illegal purposes. These tools are meant for authorized parties with legal consent to conduct testing.
 
 The idea for MELOS is based on the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and information gathering. During a penetration test, once multiple devices have been compromised, MELOS can be run to execute commands over multicast while evading certain network security controls. The use of multicast may also reduce the footprint of activity on the network during a penetration test.
 
