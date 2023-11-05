@@ -1,21 +1,22 @@
 """\
      o       .                         o      .
                       .
-    .   dBBBBBBBb dBBBBP dBBBBBb  dBBBBP dBBBBBb 
-       dB'   'dP dB     dB  dBP dBP'         'BB' 
-      dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  
-     dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB' 
-    dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB' 
-       .                       o                  
-                    .                     .    
-  .       |      
-        --o--     MERSA by 0xFNDH     .
-          | Zero eXcuses For Non-Dreamers    o
-      o               .  
+    .     dBBBBBBBb dBBBBP dBBBBBb  dBBBBP dBBBBBb    .
+         dB'   'dP dB     dB  dBP dBP'         'BB' 
+.       dB'dB'dB' dBBP   dBBBBP' 'BBBBb   dBBBPBB'  
+       dB'dB'dB' dBP    dBP  BB     dBP  dBP   BB'  
+      dB'dB'dB' dBBBBP dBP  dB  dBBBBP' 'dBBBBBB'     .
+       .      Configuration Vulnerability            .'.
+                    .           o              .     |o|
+  .      |                                          .'o'.
+       --o--        MERSA by 0xFNDH       .         |._.|
+         | Zero eXcuses For Non-Dreamers Here       '   '
+      o               .                        o     ) (
+                                      .             (   )
 
 Multicast Encrypted RSA (MERSA) is a PoC tool that demonstrates how multicast can be utilized to bypass point-to-point network restrictions.
-MERSA allows for the communication of multiple devices over multicast using asymmetrical encryption with RSA.
-MERSA is an autonomous program that doesn't depend on a single endpoint or client server.
+MERSA allows for the communication of multiple devices over multicast using asymmetrical encryption.
+MERSA is an autonomous program that doesn't rely on a single endpoint or client server to function.
 
 Please do not use in military or secret service organizations, or for illegal purposes.
 These tools are meant for authorized parties with legal consent to conduct testing.\
@@ -75,8 +76,8 @@ def multicast_send(hops=255):
   return sock
 
 def display_hosts():
-  servers = list(c2_servers.keys())
-  for serv in c2_servers.keys():
+  servers = list(mersa_nodes.keys())
+  for serv in mersa_nodes.keys():
     print(f"+ -- =[ OPTION: {servers.index(serv)}{' '*(23-len(serv))}{serv} ]")
   print()
 
@@ -88,7 +89,7 @@ def cmd_mersa(public_key, multicast_group="224.0.0.251", multicast_port=1514, ke
   while True:
     display_hosts()
     while True:
-      servers = list(c2_servers.keys())
+      servers = list(mersa_nodes.keys())
       try:
         opt = input("MERSA(host-id) % ").strip()
         if opt.lower() == "discover":
@@ -113,7 +114,7 @@ def cmd_mersa(public_key, multicast_group="224.0.0.251", multicast_port=1514, ke
         pass
     
     plain = input(f"MERSA({opt}) % ").encode()
-    ciphertext = encrypt(plain, c2_servers[opt])
+    ciphertext = encrypt(plain, mersa_nodes[opt])
     soc.sendto(ciphertext, (multicast_group, multicast_port))
     mersalog.entry(plain,(IPv4LAN(),multicast_port),4,opt)
     print()
@@ -154,9 +155,9 @@ def listen_key(public_key, multicast_group="224.0.0.251", keyport=1667):
           sock.sendto(b"NOREPLY" + public_key, (multicast_group, keyport))
           mersalog.entry("",addr,1)
           mersalog.entry("",(IPv4LAN(),keyport),2)
-        if addr[0] not in c2_servers.keys():
+        if addr[0] not in mersa_nodes.keys():
           pub = RSA.importKey(data.replace(b"NOREPLY--",b"--"))
-          c2_servers.update({addr[0]:pub})
+          mersa_nodes.update({addr[0]:pub})
           print(f"\n\n[JOIN] {addr[0]} has joined.")
           if b"NOREPLY--" in data:
             mersalog.entry("",addr,3)
@@ -260,13 +261,13 @@ def MERSA(private_key, public_key):
   laplace(listen_key, (public_key,))
   cmd_mersa(public_key)
 
-c2_servers = {}
+mersa_nodes = {}
 mersalog = MLOG()
 
 if __name__ == "__main__":
   
   if not os.path.isfile("./private.pem"):
-    if "y" in input("Generate new RSA private key? [y/n] ").lower():
+    if "y" in input("     =[ Generate new RSA private key? ][y/n] ").lower():
       private = RSA.generate(2048)
       with open("./private.pem","wb") as p:
         p.write(private.exportKey())
