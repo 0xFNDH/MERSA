@@ -19,17 +19,26 @@
 
 # Overview
 
+ - [Abstract](./README.md#Abstract)
  - [Documentation](./README.md#About)
  - [PoC Testing Tools](./PoC/)
  - [Configuration Solutions](./README.md#Patching)
  - [Program Usage Example](./README.md#MELOS-Usage)
  - [Additional Information](./README.md#Additional-Information)
 
+# Abstract
+
+This research comprises two key elements. The first, involves the utilization of multicast, which bypasses both IP and point-to-point restrictions. The second, and notably more significant aspect, pertains to an unreleased tool known as Tremeris Kynigoskylo. This proprietary tool is designed to obfuscate files within multicast traffic, making it exceedingly challenging to detect any potential data leakage from a device. The use of multicast in conjunction with this tool ensures that the recipient's identity remains undisclosed, as multicast transmits packets to multiple devices. Additionally, this program does not have discernible patterns or signatures that might identify an anomalous data transmission within the network. The Proof of Concept (PoC) applications provided in this documentation solely focus on bypassing restrictions using multicast and do not obfuscate packets.
+
+The source code and PoC code for Tremeris Kynigoskylo are private and only accessible to vendors who are developing detection solutions for any potential applications that may employ similar techniques. We strongly advise companies to disable multicast on interfaces where endpoints connect, to prevent the utilization of these techniques.
+
 # About
 
 The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Light Operations Shell (MELOS) are tools that demonstrate how multicast is vulnerable to attacks and evasion techniques by undermining network security policies and bypassing Client/AP isolation. Please do not use in military or secret service organizations, or for illegal purposes. These tools are meant for authorized parties with legal consent to conduct testing.
 
-The idea for MELOS is based on the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and information gathering. During a penetration test, once multiple devices have been compromised, MELOS can be run to execute commands over multicast while evading certain network security controls. The use of multicast may also reduce the footprint of activity on the network during a penetration test.
+Multicast Encrypted Light Operations Shell (MELOS) is based around the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and remote command execution. During a penetration test, once multiple devices have been compromised, MELOS can be run to execute commands over multicast while evading certain network security controls. The use of multicast may also reduce the footprint of activity on the network during a penetration test.
+
+Multicast Encrypted RSA (MERSA) is an asymmetrically encrypted communication tool enabling secure communication between two or more individuals over multicast. It is utilized for testing multicast communications without any command execution.
 
 MERSA and MELOS can only communicate to devices contained within the same VLAN. Multicast uses both IGMP (L3) or PIM (L2) to route packets and operates outside of Internet Protocol (IP). Security controls that are specific for internet protocol do not affect multicast traffic. Network Intrusion Detection Systems (NIDS) may be weak to multicast obfuscation techniques if they do not properly monitor and control multicast traffic.
 
@@ -142,7 +151,7 @@ MERSA(10.200.40.5) % hi
 
 # Attack Scenario
 ### Unicast Enabled Network
-In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security devices. Not all Network Intrusion Detection Systems (NIDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern. Anomalous systems that have been exposed to multicast traffic, such as MDNS, prior to an attack, are some of the most susceptible to programs like TK-POC [(read more)](./README.md#Additional-Information).
+In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security devices. Not all Network Intrusion Detection Systems (NIDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern. Anomalous systems that have been exposed to multicast traffic, such as MDNS, prior to an attack, are some of the most susceptible to programs like TK-POC [(read more)](./README.md#Tremeris-Kynigoskylo-Cerberus).
 
 In this scenario, the attacker would simply need to conduct data exfiltration over multicast using either MERSA or MELOS after obtaining access to a machine.
 
@@ -214,8 +223,8 @@ MELOS is designed for penetration testing in the post-exploitation stage. MERSA 
      .                                    .
 ```
 
-## Tremeris Kynigoskylo (Three Headed Hound)
-> MERSA and MELOS are a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) developed by 0xFNDH. MERSA poses a significantly lower risk and can be detected through various network intrusion detection systems and network monitoring applications. However, TK-PoC was created to covertly extract files from internal networks without being detected or displaying any unusual activity. TK-PoC does not expose the device that is receiving the exfiltrated data, and it is also aided by the fact that Cisco does not log multicast traffic by default. MERSA and MELOS are proof-of-concept and do NOT demonstrate the full exploitability of multicast. If your goal is to maximize the effective security of your network, please take into consideration how protocols like multicast move throughout your network.
+## Tremeris Kynigoskylo (Cerberus)
+> MERSA and MELOS are a less potent iteration of the Tremeris Kynigoskylo (TK-PoC) developed by 0xFNDH. MERSA and MELOS pose a significantly lower risk and can be detected through various network intrusion detection systems and network monitoring applications. However, TK-PoC was created to covertly extract files from internal networks without being detected or displaying any unusual activity. TK-PoC does not expose the device that is receiving the exfiltrated data, and it is also aided by the fact that Cisco does not log multicast traffic by default. MERSA and MELOS are proof-of-concept and do NOT demonstrate the full exploitability of multicast. If your goal is to maximize the effective security of your network, please take into consideration how protocols like multicast move throughout your network.
 
 > This research is designed to raise awareness of the potential risks associated with multicast.
 
