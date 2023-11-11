@@ -34,7 +34,7 @@ The source code and PoC code for Tremeris Kynigoskylo are private and only acces
 
 # About
 
-The goal of the PoC is to highlight the security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Light Operations Shell (MELOS) are tools that demonstrate how multicast is vulnerable to attacks and evasion techniques by undermining network security policies and bypassing Client/AP isolation. Please do not use in military or secret service organizations, or for illegal purposes. These tools are meant for authorized parties with legal consent to conduct testing.
+The goal of the MERSA & MELOS PoC is to highlight the potential security issues of multicast-enabled networks and to create solutions to prevent incidences before they occur. Multicast Encrypted RSA (MERSA) and Multicast Encrypted Light Operations Shell (MELOS) are tools that demonstrate how multicast is vulnerable to attacks and evasion techniques by undermining network security policies and bypassing Client/AP isolation. Please do not use in military or secret service organizations, or for illegal purposes. These tools are meant for authorized parties with legal consent to conduct testing.
 
 Multicast Encrypted Light Operations Shell (MELOS) is based around the post-exploitation stage of the penetration testing process as an evasive way to conduct data exfiltration and remote command execution. During a penetration test, once multiple devices have been compromised, MELOS can be run to execute commands over multicast while evading certain network security controls. The use of multicast may also reduce the footprint of activity on the network during a penetration test.
 
