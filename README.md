@@ -40,7 +40,7 @@ Multicast Encrypted Light Operations Shell (MELOS) is based around the post-expl
 
 Multicast Encrypted RSA (MERSA) is an asymmetrically encrypted communication tool enabling secure communication between two or more individuals over multicast. It is utilized for testing multicast communications without any command execution.
 
-MERSA and MELOS can only communicate to devices contained within the same VLAN. Multicast uses both IGMP (L3) or PIM (L2) to route packets and operates outside of Internet Protocol (IP). Security controls that are specific for internet protocol do not affect multicast traffic. Network Intrusion Detection Systems (NIDS) may be weak to multicast obfuscation techniques if they do not properly monitor and control multicast traffic.
+MERSA and MELOS can only communicate to devices contained within the same VLAN. Multicast uses both IGMP (L3) or PIM (L2) to route packets and operates outside of Internet Protocol (IP). Security controls that are specific for internet protocol do not affect multicast traffic. Network Intrusion Detection Systems (NIDS) may be weak to multicast evasion techniques if they do not properly monitor and control multicast traffic.
 
 # Patching
 
