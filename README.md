@@ -1,4 +1,4 @@
-# Network Evasion With Multicast: MERSA & MELOS
+# MERSA and MELOS: AP Isolation Configuration Vulnerability
 
 ```Python
      o       .                         o      .
