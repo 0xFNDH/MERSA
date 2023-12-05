@@ -56,19 +56,48 @@ def IPv4LAN():
   return IP
 
 def multicast_recv(port, address="224.0.0.251", ttl=5, hops=255):
-  sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
   try:
+    uname = list(os.uname())[0]
+  except:
+    uname = os.name
+  if uname == "Linux":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-  except AttributeError:
-    pass
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
-  sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
-  sock.bind((address, port))
-  host = IPv4LAN()
-  sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
-  sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
-  sock.settimeout(ttl)
-  return sock
+    sock.bind(("", port))
+    mreq = struct.pack("4sl", socket.inet_aton(address), socket.INADDR_ANY)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    sock.settimeout(ttl)
+    return sock
+  
+  elif uname == "Darwin":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    try:
+      sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    except AttributeError:
+      pass
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops) 
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+    sock.bind((address, port))
+    host = IPv4LAN()
+    sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+    sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
+    sock.settimeout(ttl)
+    return sock
+
+  elif uname == "nt":
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    try:
+      sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    except AttributeError:
+      pass
+    host = IPv4LAN()
+    sock.bind((host, port))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_IF, socket.inet_aton(host))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(address) + socket.inet_aton(host))
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_TTL, hops)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
+    sock.settimeout(ttl)
+    return sock
 
 def multicast_send(hops=255):
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
