@@ -19,18 +19,11 @@
 
 # Overview
 
- - [Abstract](./README.md#Abstract)
  - [Documentation](./README.md#About)
  - [PoC Testing Tools](./PoC/)
  - [Configuration Solutions](./README.md#Patching)
  - [Program Usage Example](./README.md#MELOS-Usage)
  - [Additional Information](./README.md#Additional-Information)
-
-# Abstract
-
-This research comprises two key elements. The first, involves the utilization of multicast, which bypasses both IP and point-to-point restrictions. The second, and notably more significant aspect, pertains to an unreleased tool known as Dazuo. This proprietary tool is designed to obfuscate files within multicast traffic, making it exceedingly challenging to detect any potential data leakage from a device. The use of multicast in conjunction with this tool ensures that the recipient's identity remains undisclosed, as multicast transmits packets to multiple devices. Additionally, this program does not have discernible patterns or signatures that might identify an anomalous data transmission within the network. The Proof of Concept (PoC) applications provided in this documentation solely focus on bypassing restrictions using multicast and do not obfuscate packets.
-
-The source code and PoC code for Dazuo are private and only accessible to vendors who are developing detection solutions for any potential applications that may employ similar techniques. We strongly advise companies to disable multicast on interfaces where endpoints connect, to prevent the utilization of these techniques.
 
 # About
 
@@ -151,7 +144,7 @@ MERSA(10.200.40.5) % hi
 
 # Attack Scenario
 ### Unicast Enabled Network
-In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security devices. Not all Network Intrusion Detection Systems (NIDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern. Anomalous systems that have been exposed to multicast traffic, such as MDNS, prior to an attack, are some of the most susceptible to programs like Dazuo-PoC [(read more)](./README.md#Dazuo-Dazzle-Camouflage).
+In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security devices. Not all Intrusion Detection Systems (IDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern.
 
 In this scenario, the attacker would simply need to conduct data exfiltration over multicast using either MERSA or MELOS after obtaining access to a machine.
 
@@ -222,9 +215,6 @@ MELOS is designed for penetration testing in the post-exploitation stage. MERSA 
 - Cannot Bypass VLANs            .
      .                                    .
 ```
-
-## Dazuo (Dazzle Camouflage)
-> MERSA and MELOS are a less potent iteration of the Dazuo developed by 0xFNDH. MERSA and MELOS pose a significantly lower risk and can be detected through various network intrusion detection systems and network monitoring applications. However, Dazuo-PoC was created to covertly extract files from internal networks without being detected or displaying any unusual activity. Dazuo-PoC does not expose the device that is receiving the exfiltrated data, and it is also aided by the fact that Cisco does not log multicast traffic by default. MERSA and MELOS are proof-of-concept and do NOT demonstrate the full exploitability of multicast. If your goal is to maximize the effective security of your network, please take into consideration how protocols like multicast move throughout your network.
 
 > This research is designed to raise awareness of the potential risks associated with multicast.
 
