@@ -144,7 +144,7 @@ MERSA(10.200.40.5) % hi
 
 # Attack Scenario
 ### Unicast Enabled Network
-In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security devices. Not all Intrusion Detection Systems (IDS), Intrusion Prevention Systems (IPS), and Data Loss Prevention Systems (DLPS) control multicast traffic. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected. This does not apply to all vendors but still is a concern.
+In unicast-enabled networks, the main benefit of MERSA/MELOS is the evasiveness of multicast and its ability to avoid certain security controls. Multicast can be neglected or overlooked when designing security systems, increasing the likelihood that multicast-based operations can go undetected.
 
 In this scenario, the attacker would simply need to conduct data exfiltration over multicast using either MERSA or MELOS after obtaining access to a machine.
 
